@@ -4,6 +4,9 @@ description = "gRPC client for arduino cli"
 version = "0.1.0"
 authors = ["marcelbuesing <buesing.marcel@googlemail.com>"]
 edition = "2018"
+homepage = "https://github.com/marcelbuesing/can-dbc"
+repository = "https://github.com/marcelbuesing/arduino-cli-client.git"
+keywords = ["arduino", "arduino-cli", "arduino-grpc"]
 # License terms inherited from `arduino/arduino-cli`
 license = "GPL-3.0"
 
@@ -19,3 +22,4 @@ tonic-build = "0.3"
 
 [dev-dependencies]
 tokio = { version = "0.2", features = ["full"] }
+serde_json = "1.0"

@@ -46,3 +46,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 ```
+
+## Example - Client
+
+The `examples/` folder contains a client example that is analogue to `arduino-cli/client-example`.
