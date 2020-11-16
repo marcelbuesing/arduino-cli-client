@@ -1,0 +1,18 @@
+[package]
+name = "arduino-cli-client"
+description = "gRPC client for arduino cli"
+version = "0.1.0"
+authors = ["marcelbuesing <buesing.marcel@googlemail.com>"]
+edition = "2018"
+# License terms inherited from `arduino/arduino-cli`
+license = "GPL-3.0"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+tonic = "0.3"
+prost = "0.6"
+prost-types = "0.6"
+
+[build-dependencies]
+tonic-build = "0.3"
