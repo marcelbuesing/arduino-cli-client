@@ -6,18 +6,18 @@ mod tests {
     }
 }
 
-mod commands {
+pub mod commands {
     tonic::include_proto!("cc.arduino.cli.commands");
 }
 
-mod debug {
+pub mod debug {
     tonic::include_proto!("cc.arduino.cli.debug");
 }
 
-mod monitor {
+pub mod monitor {
     tonic::include_proto!("cc.arduino.cli.monitor");
 }
 
-mod settings {
+pub mod settings {
     tonic::include_proto!("cc.arduino.cli.settings");
 }
