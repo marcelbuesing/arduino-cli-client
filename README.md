@@ -1,7 +1,6 @@
-# Arduino CLI client
+![arduino-cli-client](https://socialify.git.ci/marcelbuesing/arduino-cli-client/image?description=1&descriptionEditable=arduino-cli%20%20gRPC%20client%20bindings%20for%20Rust&font=Inter&forks=1&issues=1&language=1&pattern=Circuit%20Board&pulls=1&stargazers=1&theme=Light)
 
-Rust gRPC bindings for [arduino-cli](https://github.com/arduino/arduino-cli).
-
+gRPC bindings for [arduino-cli](https://github.com/arduino/arduino-cli).
 Bindings are generated based on the protobuf definitions defined [here](https://github.com/arduino/arduino-cli/tree/master/rpc).
 
 
