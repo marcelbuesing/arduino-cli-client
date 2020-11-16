@@ -4,7 +4,7 @@ description = "gRPC client for arduino cli"
 version = "0.1.1"
 authors = ["marcelbuesing <buesing.marcel@googlemail.com>"]
 edition = "2018"
-homepage = "https://github.com/marcelbuesing/can-dbc"
+homepage = "https://github.com/marcelbuesing/arduino-cli-client"
 repository = "https://github.com/marcelbuesing/arduino-cli-client.git"
 keywords = ["arduino", "arduino-cli", "arduino-grpc"]
 # License terms inherited from `arduino/arduino-cli`
