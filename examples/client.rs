@@ -5,8 +5,8 @@
 
 use arduino_cli_client::commands::arduino_core_client::ArduinoCoreClient;
 use arduino_cli_client::commands::{
-    BoardListReq, InitReq, LoadSketchReq, PlatformInstallReq, PlatformListReq, PlatformSearchReq,
-    UpdateIndexReq, VersionReq,
+    InitReq, LoadSketchReq, PlatformInstallReq, PlatformListReq, PlatformSearchReq, UpdateIndexReq,
+    VersionReq,
 };
 use arduino_cli_client::settings::{
     settings_client::SettingsClient, GetAllRequest, GetValueRequest, RawData, Value,
