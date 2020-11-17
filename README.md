@@ -3,6 +3,7 @@
 gRPC bindings for [arduino-cli](https://github.com/arduino/arduino-cli).
 Bindings are generated based on the protobuf definitions defined [here](https://github.com/arduino/arduino-cli/tree/master/rpc).
 
+[![asciicast](https://asciinema.org/a/373560.svg)](https://asciinema.org/a/373560)
 
 ## Example
 
