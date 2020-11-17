@@ -4,11 +4,17 @@
 //! `arduino-cli daemon`
 
 use arduino_cli_client::commands::arduino_core_client::ArduinoCoreClient;
-use arduino_cli_client::commands::{BoardListReq, InitReq, LoadSketchReq, VersionReq};
+use arduino_cli_client::commands::{
+    BoardListReq, InitReq, LoadSketchReq, PlatformInstallReq, PlatformListReq, PlatformSearchReq,
+    UpdateIndexReq, VersionReq,
+};
 use arduino_cli_client::settings::{
-    settings_client::SettingsClient, GetAllRequest, RawData, Value,
+    settings_client::SettingsClient, GetAllRequest, GetValueRequest, RawData, Value,
 };
 use serde_json::json;
+// use futures_util::{future, stream, StreamExt};
+use tokio::stream::StreamExt;
+// use futures_util::stream::StreamExt;
 use std::{env, fs};
 
 #[tokio::main]
@@ -70,26 +76,91 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     .to_string();
     settings_client.merge(RawData { json_data }).await?;
 
-    // Start a new instance of the Arduino Core Service
-    let resp_instance = client
+    // Get the value of the foo key.
+    settings_client
+        .get_value(GetValueRequest {
+            key: "foo".to_string(),
+        })
+        .await?;
+
+    // Before we can do anything with the CLI, an "instance" must be created.
+    // We keep a reference to the created instance because we will need it to
+    // run subsequent commands.
+    let mut init_stream = client
         .init(InitReq {
             library_manager_only: false,
         })
         .await?
-        .into_inner()
-        .message()
-        .await?
-        .expect("Failed to init");
+        .into_inner();
+    let resp_instance = init_stream.message().await?.expect("Failed to init");
 
-    // List the boards currently connected to the computer.
+    // With a brand new instance, the first operation should always be updating
+    // the index.
+    let mut update_index_stream = client
+        .update_index(UpdateIndexReq {
+            instance: resp_instance.instance.clone(),
+        })
+        .await?
+        .into_inner();
+    while let Some(update_index_resp) = update_index_stream.next().await {
+        let resp = update_index_resp?;
+        println!("DOWNLOAD: {:?}", resp.download_progress.unwrap_or_default());
+    }
+    println!("Update index done");
+
+    // Let's search for a platform (also known as 'core') called 'samd'.
     let resp = client
-        .board_list(BoardListReq {
-            instance: resp_instance.instance,
+        .platform_search(PlatformSearchReq {
+            instance: resp_instance.instance.clone(),
+            search_args: "samd".to_string(),
+            all_versions: true,
         })
         .await?
         .into_inner();
 
-    print!("Boards: {:?}", resp.ports);
+    for platform in resp.search_output {
+        println!("Search result: {} - {}", platform.id, platform.latest);
+    }
+
+    // Install arduino:samd@1.6.19
+    let mut resp = client
+        .platform_install(PlatformInstallReq {
+            instance: resp_instance.instance.clone(),
+            platform_package: "arduino".to_string(),
+            architecture: "samd".to_string(),
+            version: "1.6.19".to_string(),
+            ..Default::default()
+        })
+        .await?
+        .into_inner();
+
+    while let Some(install_resp) = resp.next().await {
+        let resp = install_resp?;
+        if let Some(progress) = resp.progress {
+            println!("DOWNLOAD: {:?}", progress);
+        }
+        if let Some(task_progress) = resp.task_progress {
+            println!("TASK: {:?}", task_progress);
+        }
+    }
+    println!("Install done");
+
+    // Now list the installed platforms to double check previous installation
+    // went right.
+    let resp = client
+        .platform_list(PlatformListReq {
+            instance: resp_instance.instance.clone(),
+            ..Default::default()
+        })
+        .await?
+        .into_inner();
+
+    for platform in resp.installed_platform {
+        println!(
+            "Installed platform: {} - {}",
+            platform.id, platform.installed
+        );
+    }
 
     Ok(())
 }
