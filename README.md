@@ -21,15 +21,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut client = ArduinoCoreClient::connect("http://localhost:50051").await?;
 
     // Start a new instance of the Arduino Core Service
-    let resp_instance = client
+    let mut init_stream = client
         .init(Request::new(InitReq {
             library_manager_only: false,
         }))
         .await?
-        .into_inner()
-        .message()
-        .await?
-        .expect("Failed to init");
+        .into_inner();
+
+    let resp_instance = init_stream.message().await?.expect("Failed to init");
 
     // List the boards currently connected to the computer.
     let resp_boards = client
